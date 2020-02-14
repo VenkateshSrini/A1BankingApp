@@ -6,8 +6,8 @@ namespace A1.BankingApp.contracts
 {
     public interface ITransaction
     {
-        int FromAccount { get; set; }
-        int ToAccount { get; set; }
+        int FromAccount { get;  }
+        int ToAccount { get;  }
          bool TransferAmount(double amountToTransfer);
 
     }

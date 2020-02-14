@@ -10,7 +10,7 @@ namespace A1.BankingApp.Exceptions
         public Accounts accounts { get; private set; }
         public BankException(Accounts accounts)
         {
-            this.accounts = accounts
+            this.accounts = accounts;
         }
         public override string Message => $"{accounts.ValidationErrMsg} \n {accounts.AccountNumber} {accounts.UserName}";
 

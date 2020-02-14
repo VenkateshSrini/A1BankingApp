@@ -10,40 +10,53 @@ namespace A1.BankingApp.baseTypes
     public abstract class Accounts : IROI, ITransaction
     {
         public abstract string TypeOfAccount { get; }
-        public abstract int FromAccount { get; set; }
-        public abstract int ToAccount { get; set; }
+        public abstract int FromAccount { get;  }
+        public abstract int ToAccount { get;  }
 
         public abstract double GetRateOfInterest();
-        public abstract bool TransferAmount(double amountToTransfer);
+        protected virtual bool TransferAmount(double amountToTransfer)
+        {
+            if ((FromAccount > 0) && (ToAccount>0) && AccountRepo.ContainsKey(FromAccount) 
+                && AccountRepo.ContainsKey(ToAccount))
+            {
+                AccountRepo[ToAccount].Balance += amountToTransfer;
+                AccountRepo[FromAccount].Balance -= amountToTransfer;
+                return true;
+            }
+            return false;
+
+        }
         public virtual int AccountNumber { get; protected set; }
         public string UserName { get; private set; }
         public double Balance { get; protected set; }
         public string ValidationErrMsg { get; set; }
         protected Dictionary<int, Accounts> AccountRepo = new Dictionary<int, Accounts>();
-        protected virtual int OpenAccount(Func<Tuple<bool,string>>validation,Accounts newAccount )
+        protected virtual int OpenAccount(Accounts newAccount )
         {
-            var validationResult = validation();
-         
-            if (validationResult.Item1)
+            if (newAccount.Balance <1000)
+            {
+                newAccount.ValidationErrMsg = "Minim intial amout should be 1000";
+                throw new BankException(newAccount);
+            }
+            else
             {
                 var temp = Guid.NewGuid().ToString().Replace("-", string.Empty);
                 var accountNumber = int.Parse(Regex.Replace(temp, "[a-zA-Z]", string.Empty).Substring(0, 12));
                 AccountRepo.Add(accountNumber, newAccount);
                 return accountNumber;
-
-            }
-            else
-            {
-                newAccount.ValidationErrMsg = validationResult.Item2;
-                throw new BankException(newAccount);
-                
             }
             
         }
         protected virtual bool Close(Accounts account)
         {
+            
             if (AccountRepo.ContainsKey(account.AccountNumber))
             {
+                if (AccountRepo[account.AccountNumber].Balance>=1)
+                {
+                    account.ValidationErrMsg += " Balance amount is not zero";
+                    throw new BankException(account);
+                }
                 AccountRepo.Remove(account.AccountNumber);
                 return true;
             }
