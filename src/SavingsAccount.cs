@@ -1,5 +1,6 @@
 ﻿using A1.BankingApp.baseTypes;
 using A1.BankingApp.Exceptions;
+using A1.BankingApp.Repository;
 using System;
 
 namespace A.BankingApp
@@ -7,20 +8,76 @@ namespace A.BankingApp
     public class SavingsAccount : Accounts
     {
         public override string TypeOfAccount => "SB";
-        private int fromAccountNuber;
+     
         private int toAccountNumber;
-        public override int FromAccount { get=> fromAccountNuber;  }
+        
         public override int ToAccount { get=> toAccountNumber;  }
-        public int MaxAmountPerDay{get=>40000;}
+        public const int MaxAmountPerday = 40000;
+        public SavingsAccount(ILedgerRepo ledgerRepo) : base(ledgerRepo)
+        {
+
+        }
+        public int OpenAccount(string userName, double openingBalance)
+        {
+            this.Balance = openingBalance;
+            this.UserName = userName;
+            return base.OpenAccount(this);
+        }
+        public bool CloseAccount()
+        {
+            return base.Close(this);
+        }
+        public bool EditAccountDetails(string userName)
+        {
+            this.UserName = userName;
+            if (base.EditAccount(this) != null)
+                return true;
+            else
+            {
+                ValidationErrMsg = "User details modification failed";
+                throw new BankException(this);
+            }
+
+        }
+        public bool DepositAmount(double amount)
+        {
+            if (base.Deposit(amount, this) != null)
+                return true;
+            else
+            {
+                ValidationErrMsg = "Amount Deposition failed";
+                throw new BankException(this);
+            }
+        }
+        public bool WithdrawlAmount(double amount)
+        {
+            var totalAmount = ledgerRepo.GetAmountPerdayPeractivty(Activity.WITHDRAW);
+            if ((totalAmount+amount) > MaxAmountPerday)
+            {
+                ValidationErrMsg = "Amount withdrawl failed: Max Amount per day exceeded ";
+                throw new BankException(this);
+            }
+            else
+            {
+                if (base.Withdrawal(amount, this) != null)
+                    return true;
+                else
+                {
+                    ValidationErrMsg = "Amount withdrawl failed";
+                    throw new BankException(this);
+                }
+            }
+        }
         public override double GetRateOfInterest()
         {
-            throw new NotImplementedException();
+            return 8.5;
         }
 
-        public bool TransferAmount(int fromAccount, int toAccount, double amountToTransfer)
+        public bool TransferAmount(int toAccount, double amountToTransfer)
         {
-            fromAccountNuber = fromAccount;
+          
             toAccountNumber = toAccount;
+         
             if (base.TransferAmount(amountToTransfer))
             {
                 return true;
@@ -32,5 +89,6 @@ namespace A.BankingApp
             }
 
         }
+        
     }
 }
