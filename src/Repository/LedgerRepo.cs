@@ -8,10 +8,10 @@ namespace A1.BankingApp.Repository
 {
     public class LedgerRepository : ILedgerRepo
     {
-        private static List<Ledger> ledgerEntry;
+        private  List<Ledger> ledgerEntry;
        public LedgerRepository()
         {
-            if (ledgerEntry == null) ledgerEntry = new List<Ledger>();
+           ledgerEntry = new List<Ledger>();
         }
 
         public bool AddLedgerEntry(Ledger ledger)

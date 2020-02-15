@@ -14,7 +14,7 @@ namespace A1.BankingApp
         private int toAccountNumber;
         public override int ToAccount { get => toAccountNumber; }
         public const int MinimumBalance = 3000;
-        public CurrentAccount (ILedgerRepo ledgerRepo):base(ledgerRepo)
+        public CurrentAccount(ILedgerRepo ledgerRepo) : base(ledgerRepo)
         {
 
         }
@@ -53,6 +53,36 @@ namespace A1.BankingApp
                 ValidationErrMsg = "Amount Deposition failed";
                 throw new BankException(this);
             }
+        }
+        public bool WithdrawlAmount(double amount)
+        {
+            if (this.Balance - amount <= 3000)
+            {
+                ValidationErrMsg = "Withdrawl failed as mimum balance is forefeited.";
+                throw new BankException(this);
+            }
+            return (base.Withdrawal(amount, this) != null) ? true : throw new BankException(this);
+            
+
+        }
+        public bool TransferAmount(int toAccount, double amountToTransfer)
+        {
+
+            toAccountNumber = toAccount;
+            if (this.Balance - amountToTransfer <= 3000)
+            {
+                ValidationErrMsg = "Withdrawl failed as mimum balance is forefeited.";
+                throw new BankException(this);
+            }
+
+            if (base.TransferAmount(amountToTransfer))
+                return true;
+            else
+            {
+                ValidationErrMsg = "In valid account number";
+                throw new BankException(this);
+            }
+
         }
     }
 }

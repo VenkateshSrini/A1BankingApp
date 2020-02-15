@@ -17,8 +17,8 @@ namespace A1.BankingApp.baseTypes
 
         public abstract double GetRateOfInterest();
         
-        public virtual int AccountNumber { get; protected set; }
-        public string UserName { get; protected set; }
+        public virtual int AccountNumber { get; internal set; }
+        public string UserName { get; internal set; }
         public double Balance { get; protected set; }
         public string ValidationErrMsg { get; set; }
         protected Dictionary<int, Accounts> AccountRepo = new Dictionary<int, Accounts>();
