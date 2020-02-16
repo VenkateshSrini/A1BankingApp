@@ -5,3 +5,4 @@
 /.vs/A1.BankingApp/v16/Server/sqlite3
 /src/obj
 /.vs
+/src/bin/Debug/netstandard2.0

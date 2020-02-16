@@ -21,11 +21,13 @@ namespace A1.BankingApp.baseTypes
         public string UserName { get; internal set; }
         public double Balance { get; protected set; }
         public string ValidationErrMsg { get; set; }
-        protected Dictionary<int, Accounts> AccountRepo = new Dictionary<int, Accounts>();
+        
         protected ILedgerRepo ledgerRepo;
-        public Accounts(ILedgerRepo ledgerRepo)
+        protected IAccountRepo accountRepo;
+        public Accounts(ILedgerRepo ledgerRepo, IAccountRepo accountRepo)
         {
             this.ledgerRepo = ledgerRepo;
+            this.accountRepo = accountRepo;
         }
 
         protected virtual int OpenAccount(Accounts newAccount )
@@ -42,143 +44,145 @@ namespace A1.BankingApp.baseTypes
             }
             else
             {
-                var temp = Guid.NewGuid().ToString().Replace("-", string.Empty);
-                var accountNumber = int.Parse(Regex.Replace(temp, "[a-zA-Z]", string.Empty).Substring(0, 12));
-                newAccount.AccountNumber = accountNumber;
-                AccountRepo.Add(accountNumber, newAccount);
-                return accountNumber;
+                return accountRepo.AddAccount(newAccount);
             }
             
         }
         protected virtual bool Close(Accounts account)
         {
+            var accounts = accountRepo.GetAccountDetailsByAccountNumber(account.AccountNumber);
             
-            if (AccountRepo.ContainsKey(account.AccountNumber))
+            if (accounts.Balance>=1)
             {
-                if (AccountRepo[account.AccountNumber].Balance>=1)
-                {
-                    account.ValidationErrMsg += " Balance amount is not zero";
-                    throw new BankException(account);
-                }
-                AccountRepo.Remove(account.AccountNumber);
-                return true;
+                account.ValidationErrMsg += " Balance amount is not zero";
+                throw new BankException(account);
             }
+            if (accountRepo.DeleteAccount(account.AccountNumber))
+                return true;
             else
             {
                 account.ValidationErrMsg += " account number does not exist";
                 throw new BankException(account);
             }
+
+
+
         }
         protected virtual Accounts EditAccount(Accounts account)
         {
-            if (AccountRepo.ContainsKey(account.AccountNumber))
-            {
-                AccountRepo[account.AccountNumber].UserName = account.UserName;
-                return AccountRepo[account.AccountNumber];
-            }
-            else
+            var accounts = accountRepo.GetAccountDetailsByAccountNumber(account.AccountNumber);
+            if (accounts == null)
             {
                 account.ValidationErrMsg += " account number does not exist";
                 throw new BankException(account);
+            }
+            else if(accountRepo.EditAccount(accounts))
+            {
+                return accounts;
+            }
+            else
+            {
+                return null;
             }
         }
         protected virtual Accounts Deposit(double depositAmount, Accounts account)
         {
-            if (AccountRepo.ContainsKey(account.AccountNumber))
-            {
-                if (depositAmount >= 0)
-                {
-                    AccountRepo[account.AccountNumber].Balance = AccountRepo[account.AccountNumber].Balance + depositAmount;
-                    Ledger ledger = new Ledger
-                    {
-                        Description = $"Amount{depositAmount} Deposited in Person",
-                        FromAccount = account.AccountNumber,
-                        LedgerActivity = Activity.DEPOSIT,
-                        ledgerEntryDT = DateTime.Today,
-                        TransactionAmount = depositAmount,
-                        LedgerTransactionType = TransactionType.CREDIT
-
-                    };
-                    ledgerRepo.AddLedgerEntry(ledger);
-                    return AccountRepo[account.AccountNumber];
-                }
-                return null;   
-                
-            }
-            else
+            var accounts = accountRepo.GetAccountDetailsByAccountNumber(account.AccountNumber);
+            if (accounts == null)
             {
                 account.ValidationErrMsg += " account number does not exist";
                 throw new BankException(account);
-
             }
+            else if (depositAmount >= 0)
+            {
+                accounts.Balance = accounts.Balance + depositAmount;
+                Ledger ledger = new Ledger
+                {
+                    Description = $"Amount{depositAmount} Deposited in Person",
+                    FromAccount = account.AccountNumber,
+                    LedgerActivity = Activity.DEPOSIT,
+                    ledgerEntryDT = DateTime.Today,
+                    TransactionAmount = depositAmount,
+                    LedgerTransactionType = TransactionType.CREDIT
+
+                };
+                ledgerRepo.AddLedgerEntry(ledger);
+                return accounts;
+            }
+            return null;
+
         }
         protected Accounts Withdrawal(double withdrawAmount, Accounts account)
         {
-            if (AccountRepo.ContainsKey(account.AccountNumber))
-            {
-                if (withdrawAmount >= 0)
-                {
-                    AccountRepo[account.AccountNumber].Balance = 
-                        AccountRepo[account.AccountNumber].Balance - withdrawAmount;
-                    Ledger ledger = new Ledger
-                    {
-                        Description = $"Amount{withdrawAmount} Deposited in Person",
-                        FromAccount = account.AccountNumber,
-                        LedgerActivity = Activity.WITHDRAW,
-                        ledgerEntryDT = DateTime.Today,
-                        TransactionAmount = withdrawAmount,
-                        LedgerTransactionType = TransactionType.DEBIT
-
-                    };
-                    ledgerRepo.AddLedgerEntry(ledger);
-                    return AccountRepo[account.AccountNumber];
-                }
-                return null;
-
-            }
-            else
+            var accounts = accountRepo.GetAccountDetailsByAccountNumber(account.AccountNumber);
+            if (accounts == null)
             {
                 account.ValidationErrMsg += " account number does not exist";
                 throw new BankException(account);
-
             }
+            else if (withdrawAmount >= 0)
+            {
+                accounts.Balance = accounts.Balance - withdrawAmount;
+                Ledger ledger = new Ledger
+                {
+                    Description = $"Amount{withdrawAmount} Deposited in Person",
+                    FromAccount = account.AccountNumber,
+                    LedgerActivity = Activity.WITHDRAW,
+                    ledgerEntryDT = DateTime.Today,
+                    TransactionAmount = withdrawAmount,
+                    LedgerTransactionType = TransactionType.DEBIT
+
+                };
+                ledgerRepo.AddLedgerEntry(ledger);
+                return accounts;
+            }
+            return null;
+          
         }
         protected double CheckBalance(int accountNumber)
         {
-
-            if (AccountRepo.ContainsKey(accountNumber))
+            var accounts = accountRepo.GetAccountDetailsByAccountNumber(accountNumber);
+            if (accounts == null)
             {
-                
-                return AccountRepo[accountNumber].Balance;
-
+                accounts.ValidationErrMsg += " account number does not exist";
+                throw new BankException(accounts);
             }
-            return -1;
+            else
+                return accounts.Balance;
+            
         }
         protected virtual Accounts GetAccountsDetails(int accountNumber)
         {
-            if (AccountRepo.ContainsKey(accountNumber))
-                return AccountRepo[accountNumber];
-            else
-                return null;
+            return accountRepo.GetAccountDetailsByAccountNumber(accountNumber);
         }
         public virtual List<Accounts>GetAccountDetails(string userName)
         {
-            return new List<Accounts>(
-                AccountRepo.Values.Where(account => account.UserName.CompareTo(userName) == 0)
-                );
+            return accountRepo.GetAccountDetailsByUserName(userName);
         }
         public bool TransferAmount(double amountToTransfer)
         {
-            if ((FromAccount > 0) && (ToAccount > 0) && AccountRepo.ContainsKey(FromAccount)
-                && AccountRepo.ContainsKey(ToAccount))
+            var fromAccount = accountRepo.GetAccountDetailsByAccountNumber(FromAccount);
+            var toAccount = accountRepo.GetAccountDetailsByAccountNumber(ToAccount);
+            if (fromAccount ==null)
             {
-                AccountRepo[ToAccount].Balance += amountToTransfer;
-                AccountRepo[FromAccount].Balance -= amountToTransfer;
+                ValidationErrMsg = "From account is not found";
+                throw new BankException(fromAccount);
+            }
+            else if (toAccount == null)
+            {
+                ValidationErrMsg = "To account does not exist";
+                throw new BankException(toAccount);
+
+            }
+            else
+            {
+                toAccount.Balance += amountToTransfer;
+                fromAccount.Balance -= amountToTransfer;
                 Ledger ledger = new Ledger
                 {
                     Description = $"Amount{amountToTransfer} Deposited in Person",
                     FromAccount = FromAccount,
-                    ToAccount= ToAccount,
+                    ToAccount = ToAccount,
                     LedgerActivity = Activity.TRANSFER,
                     ledgerEntryDT = DateTime.Today,
                     TransactionAmount = amountToTransfer,
@@ -189,7 +193,8 @@ namespace A1.BankingApp.baseTypes
 
                 return true;
             }
-            return false;
+            
+            
         }
     }
 }

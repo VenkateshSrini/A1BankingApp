@@ -14,7 +14,7 @@ namespace A1.BankingApp
         private int toAccountNumber;
         public override int ToAccount { get => toAccountNumber; }
         public const int MinimumBalance = 3000;
-        public CurrentAccount(ILedgerRepo ledgerRepo) : base(ledgerRepo)
+        public CurrentAccount(ILedgerRepo ledgerRepo, IAccountRepo accountRepo) : base(ledgerRepo, accountRepo)
         {
 
         }

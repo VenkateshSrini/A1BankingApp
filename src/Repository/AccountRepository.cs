@@ -1,7 +1,7 @@
 ﻿using A1.BankingApp.baseTypes;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace A1.BankingApp.Repository
@@ -35,7 +35,16 @@ namespace A1.BankingApp.Repository
 
         public Accounts GetAccountDetailsByAccountNumber(int accountNumber)
         {
-            return AccountRepo[account.AccountNumber];
+            return AccountRepo[accountNumber];
+        }
+        public List<Accounts> GetAccountDetailsByUserName(string userName)
+        {
+            if (string.IsNullOrWhiteSpace(userName))
+                return null;
+            else
+                return new List<Accounts>(
+               AccountRepo.Values.Where(account => account.UserName.CompareTo(userName) == 0)
+               );
         }
     }
 }

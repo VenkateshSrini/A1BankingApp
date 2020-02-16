@@ -10,6 +10,7 @@ namespace A1.BankingApp.Repository
         int AddAccount(Accounts newAccount);
         bool EditAccount(Accounts accounts);
         Accounts GetAccountDetailsByAccountNumber(int accountNumber);
+        List<Accounts> GetAccountDetailsByUserName(string userName);
         bool DeleteAccount(int accountNumber);
     }
 }
