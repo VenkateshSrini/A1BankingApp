@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 namespace A1.BankingApp.Repository
 {
 
-    public class AccountRepository: IAccountRepo
+    public class AccountRepository: IAccountRepo, IDisposable
     {
         protected Dictionary<int, Accounts> AccountRepo = new Dictionary<int, Accounts>();
 
@@ -46,5 +46,34 @@ namespace A1.BankingApp.Repository
                AccountRepo.Values.Where(account => account.UserName.CompareTo(userName) == 0)
                );
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    if (AccountRepo != null)
+                        AccountRepo = null;
+                }
+
+               
+
+                disposedValue = true;
+            }
+        }
+
+       
+        public void Dispose()
+        {
+            
+            Dispose(true);
+            
+        }
+        #endregion
+
     }
 }

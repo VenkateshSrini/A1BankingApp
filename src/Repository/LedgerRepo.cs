@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace A1.BankingApp.Repository
 {
-    public class LedgerRepository : ILedgerRepo
+    public class LedgerRepository : ILedgerRepo, IDisposable
     {
         private  List<Ledger> ledgerEntry;
        public LedgerRepository()
@@ -31,5 +31,34 @@ namespace A1.BankingApp.Repository
                                             ) ? ledger.TransactionAmount : 0);
             
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    if (ledgerEntry != null)
+                        ledgerEntry = null;
+                }
+
+                
+
+                disposedValue = true;
+            }
+        }
+
+      
+        
+        public void Dispose()
+        {
+            
+            Dispose(true);
+            
+        }
+        #endregion
     }
 }

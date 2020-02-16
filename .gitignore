@@ -6,3 +6,4 @@
 /src/obj
 /.vs
 /src/bin/Debug/netstandard2.0
+/test/A.BankingApp.Functional.Test/obj

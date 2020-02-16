@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{76CCF49A-1
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "A1.BankingApp", "src\A1.BankingApp.csproj", "{66F6FC53-7979-4E3C-A564-B328B8D7D80C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "A.BankingApp.Functional.Test", "test\A.BankingApp.Functional.Test\A.BankingApp.Functional.Test.csproj", "{0B98744E-F40C-4EEB-9DFF-ADB7E9606A24}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,12 +21,17 @@ Global
 		{66F6FC53-7979-4E3C-A564-B328B8D7D80C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66F6FC53-7979-4E3C-A564-B328B8D7D80C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66F6FC53-7979-4E3C-A564-B328B8D7D80C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B98744E-F40C-4EEB-9DFF-ADB7E9606A24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B98744E-F40C-4EEB-9DFF-ADB7E9606A24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B98744E-F40C-4EEB-9DFF-ADB7E9606A24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B98744E-F40C-4EEB-9DFF-ADB7E9606A24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{66F6FC53-7979-4E3C-A564-B328B8D7D80C} = {98D238B3-7062-4BCE-AF68-67DDC0C26146}
+		{0B98744E-F40C-4EEB-9DFF-ADB7E9606A24} = {76CCF49A-170F-4244-A1C6-EB4A9E5CB6E7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F7D5624B-788C-4F77-A919-08CAAE033618}
