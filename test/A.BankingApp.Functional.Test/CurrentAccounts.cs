@@ -6,11 +6,11 @@ using System.Text;
 
 namespace A.BankingApp.Functional.Test
 {
-    public class CurrentSavingAccounts
+    public class CurrentAccountsTest
     {
         private readonly IAccountRepo AccountRepo;
         private readonly ILedgerRepo LedgerRepo;
-        public CurrentSavingAccounts(RespositoryFixture repofixture)
+        public CurrentAccountsTest(RespositoryFixture repofixture)
         {
             AccountRepo = repofixture.AccountRepo;
             LedgerRepo = repofixture.LedgerRepo;
