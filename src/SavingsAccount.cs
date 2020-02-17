@@ -12,7 +12,7 @@ namespace A.BankingApp
         private double toAccountNumber;
         
         public override double ToAccount { get=> toAccountNumber;  }
-        public const int MaxAmountPerday = 40000;
+        public const int MaxAmountPerday = 4000;
         public SavingsAccount(ILedgerRepo ledgerRepo, IAccountRepo accountRepo) : base(ledgerRepo, accountRepo)
         {
 

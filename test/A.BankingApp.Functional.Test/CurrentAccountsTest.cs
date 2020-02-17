@@ -72,7 +72,17 @@ namespace A.BankingApp.Functional.Test
             Assert.Equal("CB", currentAccount.TypeOfAccount);
             Assert.Equal(3000, CurrentAccount.MinimumBalance);
             Assert.Equal(5, currentAccount.GetRateOfInterest());
-
         }
+        [Theory]
+        [InlineData("c", 7001, "c", 7000)]
+        public void MinimumBalancePerday(string userName, double bal1, string userName1, double bal2)
+        {
+            CurrentAccount currentAccount = new CurrentAccount(LedgerRepo, AccountRepo);
+            CurrentAccount currentAccount1 = new CurrentAccount(LedgerRepo, AccountRepo);
+            var fromAccountNumber = currentAccount.OpenAccount(userName, bal1);
+            var toAccountNumber = currentAccount1.OpenAccount(userName1, bal2);
+            Assert.Throws<BankException>(() => currentAccount.TransferAmount(toAccountNumber, bal2));
+        }
+
     }
 }

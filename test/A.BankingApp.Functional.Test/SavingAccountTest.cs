@@ -72,7 +72,21 @@ namespace A.BankingApp.Functional.Test
             var toAccountNumber = savingsAccount1.OpenAccount(userName1, bal2);
             Assert.True(savingsAccount.TransferAmount(toAccountNumber, 100));
             Assert.Equal("SB", savingsAccount.TypeOfAccount);
-            Assert.Equal(40000, SavingsAccount.MaxAmountPerday);
+            Assert.Equal(4000, SavingsAccount.MaxAmountPerday);
+
+        }
+        [Theory]
+        [InlineData("a", 6001)]
+        public void MaxAmountPerDaytest(string userName, double minimumBal)
+        {
+            SavingsAccount savingsAccount = new SavingsAccount(LedgerRepo, AccountRepo);
+            var fromAccountNumber = savingsAccount.OpenAccount(userName, minimumBal);
+            Assert.True(savingsAccount.WithdrawlAmount(1000));
+            Assert.True(savingsAccount.WithdrawlAmount(1000));
+            Assert.True(savingsAccount.WithdrawlAmount(1000));
+            Assert.True(savingsAccount.WithdrawlAmount(1000));
+            Assert.Throws<BankException>(() => savingsAccount.WithdrawlAmount(10));
+
 
         }
     }
