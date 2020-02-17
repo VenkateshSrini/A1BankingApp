@@ -9,15 +9,15 @@ namespace A.BankingApp
     {
         public override string TypeOfAccount => "SB";
      
-        private int toAccountNumber;
+        private double toAccountNumber;
         
-        public override int ToAccount { get=> toAccountNumber;  }
+        public override double ToAccount { get=> toAccountNumber;  }
         public const int MaxAmountPerday = 40000;
         public SavingsAccount(ILedgerRepo ledgerRepo, IAccountRepo accountRepo) : base(ledgerRepo, accountRepo)
         {
 
         }
-        public int OpenAccount(string userName, double openingBalance)
+        public double OpenAccount(string userName, double openingBalance)
         {
             this.Balance = openingBalance;
             this.UserName = userName;
@@ -73,7 +73,7 @@ namespace A.BankingApp
             return 8.5;
         }
 
-        public bool TransferAmount(int toAccount, double amountToTransfer)
+        public bool TransferAmount(double toAccount, double amountToTransfer)
         {
           
             toAccountNumber = toAccount;

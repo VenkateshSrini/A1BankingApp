@@ -9,19 +9,19 @@ namespace A1.BankingApp.Repository
 
     public class AccountRepository: IAccountRepo, IDisposable
     {
-        protected Dictionary<int, Accounts> AccountRepo = new Dictionary<int, Accounts>();
+        protected Dictionary<double, Accounts> AccountRepo = new Dictionary<double, Accounts>();
 
-        public int AddAccount(Accounts newAccount)
+        public double AddAccount(Accounts newAccount)
         {
             var temp = Guid.NewGuid().ToString().Replace("-", string.Empty);
-            var accountNumber = int.Parse(Regex.Replace(temp, "[a-zA-Z]", string.Empty)
+            var accountNumber = double.Parse(Regex.Replace(temp, "[a-zA-Z]", string.Empty)
                                                 .Substring(0, 12));
             newAccount.AccountNumber = accountNumber;
             AccountRepo.Add(accountNumber, newAccount);
             return accountNumber;
         }
 
-        public bool DeleteAccount(int accountNumber)
+        public bool DeleteAccount(double accountNumber)
         {
            return AccountRepo.Remove(accountNumber);
         }
@@ -33,7 +33,7 @@ namespace A1.BankingApp.Repository
             return true;
         }
 
-        public Accounts GetAccountDetailsByAccountNumber(int accountNumber)
+        public Accounts GetAccountDetailsByAccountNumber(double accountNumber)
         {
             return AccountRepo[accountNumber];
         }

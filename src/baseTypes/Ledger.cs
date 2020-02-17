@@ -19,8 +19,8 @@ namespace A1.BankingApp.baseTypes
     public class Ledger
     {
         public DateTime ledgerEntryDT { get; set; }
-        public int FromAccount { get; set; }
-        public int ToAccount { get; set; }
+        public double FromAccount { get; set; }
+        public double ToAccount { get; set; }
         public string Description { get; set; }
         public Activity LedgerActivity { get; set; }
         public double TransactionAmount { get; set; }

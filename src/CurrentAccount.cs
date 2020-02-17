@@ -11,8 +11,8 @@ namespace A1.BankingApp
     {
 
         public override string TypeOfAccount => "CB";
-        private int toAccountNumber;
-        public override int ToAccount { get => toAccountNumber; }
+        private double toAccountNumber;
+        public override double ToAccount { get => toAccountNumber; }
         public const int MinimumBalance = 3000;
         public CurrentAccount(ILedgerRepo ledgerRepo, IAccountRepo accountRepo) : base(ledgerRepo, accountRepo)
         {
@@ -22,7 +22,7 @@ namespace A1.BankingApp
         {
             return 5;
         }
-        public int OpenAccount(string userName, double openingBalance)
+        public double OpenAccount(string userName, double openingBalance)
         {
             this.Balance = openingBalance;
             this.UserName = userName;
@@ -65,7 +65,7 @@ namespace A1.BankingApp
             
 
         }
-        public bool TransferAmount(int toAccount, double amountToTransfer)
+        public bool TransferAmount(double toAccount, double amountToTransfer)
         {
 
             toAccountNumber = toAccount;

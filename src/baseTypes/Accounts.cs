@@ -12,12 +12,12 @@ namespace A1.BankingApp.baseTypes
     public abstract class Accounts : IROI, ITransaction
     {
         public abstract string TypeOfAccount { get; }
-        public virtual int FromAccount { get=> AccountNumber;  }
-        public abstract int ToAccount { get;  }
+        public virtual double FromAccount { get=> AccountNumber;  }
+        public abstract double ToAccount { get;  }
 
         public abstract double GetRateOfInterest();
         
-        public virtual int AccountNumber { get; internal set; }
+        public virtual double AccountNumber { get; internal set; }
         public string UserName { get; internal set; }
         public double Balance { get; protected set; }
         public string ValidationErrMsg { get; set; }
@@ -30,7 +30,7 @@ namespace A1.BankingApp.baseTypes
             this.accountRepo = accountRepo;
         }
 
-        protected virtual int OpenAccount(Accounts newAccount )
+        protected virtual double OpenAccount(Accounts newAccount )
         {
             if (newAccount.Balance <1000)
             {
@@ -120,6 +120,11 @@ namespace A1.BankingApp.baseTypes
                 account.ValidationErrMsg += " account number does not exist";
                 throw new BankException(account);
             }
+            if (withdrawAmount>accounts.Balance)
+            {
+                account.ValidationErrMsg += " cannot withdraw amount greater than balance";
+                throw new BankException(account);
+            }
             else if (withdrawAmount >= 0)
             {
                 accounts.Balance = accounts.Balance - withdrawAmount;
@@ -139,9 +144,9 @@ namespace A1.BankingApp.baseTypes
             return null;
           
         }
-        protected double CheckBalance(int accountNumber)
+        public double CheckBalance()
         {
-            var accounts = accountRepo.GetAccountDetailsByAccountNumber(accountNumber);
+            var accounts = accountRepo.GetAccountDetailsByAccountNumber(this.AccountNumber);
             if (accounts == null)
             {
                 accounts.ValidationErrMsg += " account number does not exist";
@@ -173,6 +178,11 @@ namespace A1.BankingApp.baseTypes
                 ValidationErrMsg = "To account does not exist";
                 throw new BankException(toAccount);
 
+            }
+            else if (amountToTransfer > fromAccount.Balance)
+            {
+                fromAccount.ValidationErrMsg += " cannot transfer amount greater than balance";
+                throw new BankException(fromAccount);
             }
             else
             {

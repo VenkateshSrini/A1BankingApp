@@ -7,10 +7,10 @@ namespace A1.BankingApp.Repository
 {
     public interface IAccountRepo
     {
-        int AddAccount(Accounts newAccount);
+        double AddAccount(Accounts newAccount);
         bool EditAccount(Accounts accounts);
-        Accounts GetAccountDetailsByAccountNumber(int accountNumber);
+        Accounts GetAccountDetailsByAccountNumber(double accountNumber);
         List<Accounts> GetAccountDetailsByUserName(string userName);
-        bool DeleteAccount(int accountNumber);
+        bool DeleteAccount(double accountNumber);
     }
 }
