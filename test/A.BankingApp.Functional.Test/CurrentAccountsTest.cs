@@ -23,7 +23,7 @@ namespace A.BankingApp.Functional.Test
         [InlineData("a", 1001)]
         [InlineData(" ", 1001)]
         [InlineData("b", 10)]
-        public void OpenDepositWithDrawAccountTest(string userName, double minimumBalance)
+        public void OpenDepositWithDrawCloseAccountTest(string userName, double minimumBalance)
         {
             //Arrange
             CurrentAccount currentAccount = new CurrentAccount(LedgerRepo, AccountRepo);
@@ -36,7 +36,9 @@ namespace A.BankingApp.Functional.Test
 
                 currentAccount.DepositAmount(7000);
                 var withdrawStatus = currentAccount.WithdrawlAmount(2001);
+                
                 Assert.True(withdrawStatus);
+                Assert.True(currentAccount.CloseAccount());
          
             }
             else if (string.IsNullOrWhiteSpace(userName))

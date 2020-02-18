@@ -30,6 +30,7 @@ namespace A1.BankingApp
         }
         public bool CloseAccount()
         {
+            Balance = 0;
             return base.Close(this);
         }
         public bool EditAccountDetails(string userName)
